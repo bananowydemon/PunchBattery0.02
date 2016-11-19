@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_batt"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/battery_info" />
+        <item
+            android:id="@+id/nav_graphs"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/graphs"
+            android:onClick="graph"/>
+        <item
+            android:id="@+id/nav_patterns"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/patterns"
+            android:onClick="patterns"/>
+        <item
+            android:id="@+id/nav_shop"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/shop" />
+
+        <item
+            android:id="@+id/nav_pro"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/buy_pro" />
+
+        <item
+            android:id="@+id/nav_task"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/task_killer" />
+    </group>
+
+
+
+</menu>
