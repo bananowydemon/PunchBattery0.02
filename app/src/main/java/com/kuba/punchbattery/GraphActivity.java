@@ -43,7 +43,7 @@ public class GraphActivity extends AppCompatActivity {
 
         this.noOfPoints = 20; // mozliwosc zmiany liczby punktow
         this.timeSeriesData = new ArrayList<List<String>>();
-        this.timeSeriesData = LogFile.timeSeriesData(LogFile.read("filename"), this.noOfPoints); //wyciaga dane z pliku
+        this.timeSeriesData = LogFile.timeSeriesData(LogFile.read("batteryLevel.txt"), this.noOfPoints); //wyciaga dane z pliku
         List<Double> xAxisSeries = new ArrayList<Double>();
         xAxisSeries = this.dateToDouble(timeSeriesData.get(0)); // zbior rzednych punktow
 
@@ -90,6 +90,7 @@ public class GraphActivity extends AppCompatActivity {
     private void addEntry() { // !!!! zrobic kontrole wielkosci obiektu series, np co 5 odczytow .resetData() i wprowadzic od nowa
 
         //this.series.appendData(new DataPoint((double)(this.lastX++), 22.2D), true, 10); // zamiast 22.2D nowy odczyt
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

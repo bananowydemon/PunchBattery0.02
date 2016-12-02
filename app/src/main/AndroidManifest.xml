@@ -33,6 +33,7 @@
         </receiver>
 
         <service android:name=".ScreenMonitorService" />
+        <service android:name=".DataCollector" />
 
         <activity
             android:name=".TempSensorActivity"

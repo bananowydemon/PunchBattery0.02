@@ -75,6 +75,11 @@ public class MainActivity extends AppCompatActivity
         ImageView imageView = (ImageView)findViewById(R.id.ImageView1);
         imageView.setImageResource(R.drawable.batt);
 
+        // PONIZSZE TYLKO DLA TESTU, docelowo ma sie odpalac alarmmrnager uruchamiajacy serwis co jakis czas
+        Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);
+        mServiceIntent.putExtra("collectBattery", true);
+        MainActivity.this.startService(mServiceIntent);
+
     }
 
     @Override

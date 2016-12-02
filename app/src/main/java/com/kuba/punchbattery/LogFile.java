@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+
 public class LogFile {
     BufferedReader br = null; // do .read()
     public LogFile() {
@@ -131,5 +132,37 @@ public class LogFile {
         return output;
     }
 
-}
+    public static void fileSizeControl (int maxLineNumber, String fileName) {
+        List<String> output = new ArrayList<String>();
+        output = LogFile.read(fileName);
+        int size = output.size();
 
+        if (size > maxLineNumber){
+            File logFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName);
+            if(logFile.exists()) {
+                boolean deleted = logFile.delete();
+                if (deleted) {
+                    try {
+                        logFile.createNewFile();
+                    } catch (IOException var6) {
+                        var6.printStackTrace();
+                    }
+                    int difference = size - maxLineNumber;
+                    String newContent = new String();
+                    for (int i = 0; i < size; i++) {
+                        if (i >= difference) {newContent += output.get(i) + "\n";}
+                    }
+                    try {
+                        BufferedWriter buffer = new BufferedWriter(new FileWriter(logFile, true));
+                        buffer.append(newContent);
+                        buffer.close();
+                    } catch (IOException var5) {
+                        var5.printStackTrace();
+                    }
+                }
+
+            }
+        }
+    }
+
+}
