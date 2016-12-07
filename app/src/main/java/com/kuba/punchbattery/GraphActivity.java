@@ -19,7 +19,7 @@ import java.util.List;
 //import java.util.Random;
 
 public class GraphActivity extends AppCompatActivity {
-    private LineGraphSeries<DataPoint> series;
+    private LineGraphSeries series;
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
     private List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
@@ -32,10 +32,12 @@ public class GraphActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_graph);
-        Toolbar toolbar = (Toolbar)this.findViewById(R.id.graph);
+        Toolbar toolbar = (Toolbar)this.findViewById(R.id.toolbar);
         //sprawdź
         this.setSupportActionBar(toolbar);
         GraphView graphView = (GraphView)this.findViewById(R.id.graph);
+
+
 
 
 
@@ -63,6 +65,8 @@ public class GraphActivity extends AppCompatActivity {
         //viewport.setMinY(0.0D);
         //viewport.setMaxY(100.0D);
         viewport.setScalable(true);
+
+
     }
 
     protected void onResume() { // !!!!! zrobic kontrole dlugosci pliku w LogFile, uzyc tutaj
@@ -121,11 +125,15 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         // daty przerabiamy na double w godzinach, pierwsza dana to 0, ostatnia to liczba godzin od pierwszej
-        Date firstDate = sdfList.get(0);
-        for (int i = 0; i < pointNumber; i++) {
-            Date secondDate = sdfList.get(i);
-            double difference = (double)secondDate.getTime()/1000/3600 - (double)firstDate.getTime()/1000/3600;
-            output.add(difference);
+        try {
+            Date firstDate = sdfList.get(0);
+            for (int i = 0; i < pointNumber; i++) {
+                Date secondDate = sdfList.get(i);
+                double difference = (double) secondDate.getTime() / 1000 / 3600 - (double) firstDate.getTime() / 1000 / 3600;
+                output.add(difference);
+            }
+        } catch (IndexOutOfBoundsException var69) {
+            var69.printStackTrace();
         }
         return output;
     }

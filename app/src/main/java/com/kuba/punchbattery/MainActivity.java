@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-        //nie mam pojęcia co spłodziłem więc sprawdź
+        //nie mam pojęcia co spłodziłem więc sprawdź.
 
 
     }
