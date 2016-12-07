@@ -15,7 +15,7 @@ public class TempSensorActivity extends AppCompatActivity implements SensorEvent
 
     public TempSensorActivity() {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mTempSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        mTempSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
     }
 
     protected void onResume() {

@@ -26,7 +26,7 @@ public class DataCollector extends IntentService {
     private String batteryLogName = "batteryLevel.txt"; // nazwa pliku z danymi o baterii
     private long numberOfonHandleIntentExecutions = 0; // ta zminna zlicza ilosc zapisow w glownej metodzie, co n uruchomien przepriowadzane jest czyszczenie plikow
     private long fileSizeControlEveryNRuns = 50; // co ile zapisow ma byc sprawdzany rozmiar pliku i skracany
-    private int waitBetweenDataCollections = 6000; // w milisekundach
+    private int waitBetweenDataCollections = 600000; // w milisekundach
 
     public DataCollector() {
         super("DataCollector");

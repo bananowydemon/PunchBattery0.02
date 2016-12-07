@@ -3,6 +3,7 @@ package com.kuba.punchbattery;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 
 import com.jjoe64.graphview.GraphView;
@@ -19,12 +20,12 @@ import java.util.List;
 //import java.util.Random;
 
 public class GraphActivity extends AppCompatActivity {
-    private LineGraphSeries<DataPoint> series;
+    public LineGraphSeries<DataPoint> series;
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
-    private List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
-    private int noOfPoints = 50; // maks liczba punktow w metodzie onCreate
-    private int refreshEveryNPoints = 5; // co ile puntow przerysowac wykres
+    public List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
+    public int noOfPoints = 50; // maks liczba punktow w metodzie onCreate
+    public int refreshEveryNPoints = 5; // co ile puntow przerysowac wykres
 
     public GraphActivity() {
     }
@@ -32,7 +33,7 @@ public class GraphActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_graph);
-        Toolbar toolbar = (Toolbar)this.findViewById(R.id.graph);
+        Toolbar toolbar = (Toolbar)this.findViewById(R.id.toolbar);
         //sprawdź
         this.setSupportActionBar(toolbar);
         GraphView graphView = (GraphView)this.findViewById(R.id.graph);
@@ -101,16 +102,16 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     // zwraca liste dat przeliczonych na Double, zeby podstawic do wykresu do osi X
-    private List<Double> dateToDouble(List<String> dates) {
+    public List<Double> dateToDouble(List<String> dates) {
         List<Date> sdfList = new ArrayList<Date>(); // tu trzymamy czasy jako Date
         List<Double> output = new ArrayList<Double>();
 
         // być może double z małej
 
         int pointNumber = dates.size();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss:SSS");
+        sdf.setLenient(false);
         for (int i = 0; i < pointNumber; i++) { // petla przerabia daty ze String na Date
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss:SSS");
-            sdf.setLenient(false);
             try {
                 Date dt = sdf.parse(dates.get(i));
                 sdfList.add(dt); // dodaje date do listy dat

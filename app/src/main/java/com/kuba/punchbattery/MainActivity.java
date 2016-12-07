@@ -21,6 +21,12 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         batteryLevel_reading.setText(batteryLevel + "%");
 
         ImageView imageView = (ImageView)findViewById(R.id.ImageView1);
-        imageView.setImageResource(R.drawable.batt);
+        //imageView.setImageResource(R.drawable.batt);
 
         // PONIZSZE TYLKO DLA TESTU, docelowo ma sie odpalac alarmmrnager uruchamiajacy serwis co jakis czas
         Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);

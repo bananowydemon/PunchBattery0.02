@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kuba.punchbattery">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -33,7 +34,6 @@
         </receiver>
 
         <service android:name=".ScreenMonitorService" />
-        <service android:name=".DataCollector" />
 
         <activity
             android:name=".TempSensorActivity"
@@ -43,7 +43,10 @@
         <activity
             android:name=".GraphActivity"
             android:label="@string/title_activity_graph"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".DataCollector"/>
     </application>
 
 </manifest>
