@@ -1,5 +1,7 @@
 package com.kuba.punchbattery;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         Sensor TemperatureSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
 
         if(TemperatureSensor != null){
+
             textTEMPERATURE_reading.setText("Sensor.TYPE_TEMPERATURE Available");
             mySensorManager.registerListener(
                     TemperatureSensorListener,
@@ -85,6 +89,15 @@ public class MainActivity extends AppCompatActivity
         Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);
         mServiceIntent.putExtra("collectBattery", true);
         MainActivity.this.startService(mServiceIntent);
+
+
+
+        Intent intent = new Intent(MainActivity.this, DataCollector.class);
+        PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        //nie mam pojęcia co spłodziłem więc sprawdź.
+
 
     }
 
@@ -170,7 +183,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onSensorChanged(SensorEvent event) {
             if(event.sensor.getType() == Sensor.TYPE_TEMPERATURE){
-                textTEMPERATURE_reading.setText(event.values[0] + "°C");
+                String val = event.values[0] + "°C";
+                textTEMPERATURE_reading.setText(val);
             }
         }
 
