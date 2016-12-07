@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity
     public String currentBatteryLevel;
     public int batteryLevel;
 
+    private int waitBetweenDataCollections = 600000; // w milisekundach
+
     TextView batteryLevel_reading, textTEMPERATURE_reading;
     TextView textAMBIENT_TEMPERATURE_available, textAMBIENT_TEMPERATURE_reading;
 
@@ -86,16 +88,16 @@ public class MainActivity extends AppCompatActivity
         //imageView.setImageResource(R.drawable.batt);
 
         // PONIZSZE TYLKO DLA TESTU, docelowo ma sie odpalac alarmmrnager uruchamiajacy serwis co jakis czas
-        Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);
-        mServiceIntent.putExtra("collectBattery", true);
-        MainActivity.this.startService(mServiceIntent);
+        //Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);
+        //mServiceIntent.putExtra("collectBattery", true);
+        //MainActivity.this.startService(mServiceIntent);
 
 
 
         Intent intent = new Intent(MainActivity.this, DataCollector.class);
         PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 100, this.waitBetweenDataCollections, pendingIntent);
         //nie mam pojęcia co spłodziłem więc sprawdź.
 
 
