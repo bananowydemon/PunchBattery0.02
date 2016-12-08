@@ -42,8 +42,7 @@ public class GraphActivity extends AppCompatActivity {
 
 
         this.series = new LineGraphSeries();
-
-        this.noOfPoints = 20; // mozliwosc zmiany liczby punktow
+        
         this.timeSeriesData = new ArrayList<List<String>>();
         this.timeSeriesData = LogFile.timeSeriesData(LogFile.read("batteryLevel.txt"), this.noOfPoints); //wyciaga dane z pliku
         List<Double> xAxisSeries = new ArrayList<Double>();
