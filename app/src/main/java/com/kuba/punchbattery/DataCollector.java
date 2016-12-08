@@ -22,7 +22,7 @@ import java.util.Calendar;
  */
 public class DataCollector extends IntentService {
     private boolean collectBattery = true; // czy zbierac dane o baterii? do kazdej opcji taka zmienna
-    private int maxLogFileLength = 150; // maksymalna ilosc linijek w pliku, potem kasujemy
+    private int maxLogFileLength = 350; // maksymalna ilosc linijek w pliku, potem kasujemy
     private String batteryLogName = "batteryLevel.txt"; // nazwa pliku z danymi o baterii
     private static long numberOfonHandleIntentExecutions = 0; // ta zminna zlicza ilosc zapisow w glownej metodzie, co n uruchomien przepriowadzane jest czyszczenie plikow
     private long fileSizeControlEveryNRuns = 50; // co ile zapisow ma byc sprawdzany rozmiar pliku i skracany

@@ -23,7 +23,7 @@ public class GraphActivity extends AppCompatActivity {
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
     private List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
-    private int noOfPoints = 50; // maks liczba punktow w metodzie onCreate
+    private int noOfPoints = 288; // maks liczba punktow w metodzie onCreate
     private int refreshEveryNPoints = 5; // co ile puntow przerysowac wykres
 
     public GraphActivity() {
