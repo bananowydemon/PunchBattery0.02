@@ -3,4 +3,6 @@
     android:updatePeriodMillis="0"
     android:minWidth="320dp"
     android:minHeight="110dp"
-    android:initialLayout="@layout/battery_widget" />
+    android:initialLayout="@layout/battery_widget"
+    android:minResizeHeight="20dp"
+    android:minResizeWidth="20dp" />
