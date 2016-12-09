@@ -137,9 +137,20 @@ public class BatteryWidget extends AppWidgetProvider {
         ComponentName componentName = new ComponentName(context, BatteryWidget.class);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(componentName, views);
+
+
+        RemoteViews views1 = new RemoteViews(context.getPackageName(), R.layout.battery_widget);
+        if (batteryLevel > 66){
+            views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt);
+
+        }else if (batteryLevel < 66 && batteryLevel > 30){
+            views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt1);
+
+        }else{
+            views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt2);
+        }
+
     }
-
-
 
 }
 

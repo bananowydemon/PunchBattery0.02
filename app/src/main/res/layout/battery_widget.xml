@@ -16,8 +16,7 @@
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/dzialajKurwiu"
-        android:src="@drawable/batt" />
+        android:id="@+id/dzialajKurwiu" />
 
 
 </LinearLayout>
