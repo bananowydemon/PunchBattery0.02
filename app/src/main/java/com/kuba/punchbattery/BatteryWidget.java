@@ -143,10 +143,10 @@ public class BatteryWidget extends AppWidgetProvider {
         if (batteryLevel > 66){
             views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt);
 
-        }else if (batteryLevel < 66 && batteryLevel > 30){
+        }else if (batteryLevel < 66 && batteryLevel > 33){
             views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt1);
 
-        }else{
+        }else if (batteryLevel > 33){
             views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt2);
         }
 
