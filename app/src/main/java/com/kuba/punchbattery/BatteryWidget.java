@@ -76,8 +76,19 @@ public class BatteryWidget extends AppWidgetProvider {
                             context, 0, intent, 0);
                     RemoteViews views = new RemoteViews(context.getPackageName(),
                             R.layout.battery_widget);
+                    RemoteViews views1 = new RemoteViews(context.getPackageName(), R.layout.battery_widget);
+                    if (batteryLevel > 66){
+                        views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt);
+
+                    }else if (batteryLevel < 66 && batteryLevel > 30){
+                        views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt1);
+
+                    }else{
+                        views1.setImageViewResource(R.id.dzialajKurwiu, R.drawable.batt2);
+                    }
                     views.setOnClickPendingIntent(R.id.dzialajKurwiu, pendingIntent);
                     appWidgetManager.updateAppWidget(appWidgetId, views);
+                    appWidgetManager.updateAppWidget(appWidgetId, views1);
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(context.getApplicationContext(),
                             "There was a problem loading the application: ",
