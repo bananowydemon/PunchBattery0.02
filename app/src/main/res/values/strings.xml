@@ -17,4 +17,13 @@
     <string name="temperature">Temperature:</string>
     <string name="battery_level">Battery Level:</string>
     <string name="title_activity_graph">GraphActivity</string>
+
+    <string-array name="spinner_array">
+        <item>Battery Level Graph</item>
+        <item>Battery Temperature Graph</item>
+        <item>Battery Usage Info</item>
+    </string-array>
+    <string name="title_activity_task_killer">TaskKiller</string>
+
+
 </resources>

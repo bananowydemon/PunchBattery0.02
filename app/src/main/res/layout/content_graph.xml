@@ -17,4 +17,13 @@
         android:layout_height="300dp"
         android:id="@+id/graph"/>
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/graph"
+        android:layout_marginTop="10dp"
+        />
+
+
 </RelativeLayout>
