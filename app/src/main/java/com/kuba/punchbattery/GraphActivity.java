@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -22,7 +20,7 @@ import java.util.List;
 
 //import java.util.Random;
 
-public class GraphActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class GraphActivity extends AppCompatActivity {
     private LineGraphSeries series;
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
@@ -30,18 +28,8 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
     private int noOfPoints = 288; // maks liczba punktow w metodzie onCreate
     private int refreshEveryNPoints = 5; // co ile puntow przerysowac wykres
 
-
-
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
+    public GraphActivity() {
     }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,17 +40,12 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
         GraphView graphView = (GraphView)this.findViewById(R.id.graph);
 
 
-        //SPINNER
-        Spinner spinner = (Spinner) findViewById(R.id.graphs_spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.graphs, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        //spinner
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-
-        //Spinner
 
 
 
