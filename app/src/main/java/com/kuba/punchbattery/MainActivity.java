@@ -143,8 +143,6 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_pro) {
 
-        } else if (id == R.id.nav_shop) {
-
         } else if (id == R.id.nav_task) {
 
         }
