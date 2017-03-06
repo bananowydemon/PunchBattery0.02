@@ -24,6 +24,12 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -143,6 +149,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_pro) {
 
+        } else if (id == R.id.nav_shop) {
+
         } else if (id == R.id.nav_task) {
 
         }
@@ -159,10 +167,6 @@ public class MainActivity extends AppCompatActivity
 
     public void graph (MenuItem item) {
         Intent intent= new Intent(this, GraphActivity.class);
-        startActivity(intent);
-    }
-    public  void taskKiller (MenuItem item) {
-        Intent intent= new Intent(this, TaskKiller.class);
         startActivity(intent);
     }
 
