@@ -29,7 +29,7 @@ public class BatteryWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
 
-
+        updateViews(context);
 
         turnAlarmOnOff(context, true);
         context.startService(new Intent(context, ScreenMonitorService.class));
