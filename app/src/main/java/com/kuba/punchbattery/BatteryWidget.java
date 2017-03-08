@@ -19,11 +19,9 @@ public class BatteryWidget extends AppWidgetProvider {
     private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
     public  int batteryLevel = 0;
 
-    public  int getBatteryLevel(){
-        return batteryLevel;
+    public static int getBatteryLevel(Context context){
+        return calculateBatteryLevel(context);
     }
-
-
 
     @Override
     public void onEnabled(Context context) {
@@ -108,8 +106,6 @@ public class BatteryWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-
-
         if (intent.getAction().equals(ACTION_BATTERY_UPDATE)) {
             int currentLevel = calculateBatteryLevel(context);
             if (batteryChanged(currentLevel)) {
@@ -129,7 +125,7 @@ public class BatteryWidget extends AppWidgetProvider {
         context.stopService(new Intent(context, ScreenMonitorService.class));
     }
 
-    private int calculateBatteryLevel(Context context) {
+    private static int calculateBatteryLevel(Context context) {
 
 
         Intent batteryIntent = context.getApplicationContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));

@@ -30,6 +30,7 @@ public class DataCollector extends IntentService {
 
     public DataCollector() {
         super("DataCollector");
+
     }
 
     @Override
@@ -63,9 +64,9 @@ public class DataCollector extends IntentService {
             }*/
             if (collectBattery) { // zbieranie info o baterii
                 String batteryLevel = Integer.toString(calculateBatteryLevel(getApplicationContext()));
-                LogFile.log(batteryLevel, this.batteryLogName);
+                LogFile.log(getApplicationContext(), batteryLevel, this.batteryLogName);
                 if (DataCollector.numberOfonHandleIntentExecutions % fileSizeControlEveryNRuns == 0) { //co ile kontrola rozmiaru plikow
-                    LogFile.fileSizeControl(this.maxLogFileLength, this.batteryLogName);
+                    LogFile.fileSizeControl(getApplicationContext(), this.maxLogFileLength, this.batteryLogName);
                 }
             }
             DataCollector.numberOfonHandleIntentExecutions++;

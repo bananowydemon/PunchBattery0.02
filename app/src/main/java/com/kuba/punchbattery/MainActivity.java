@@ -1,6 +1,7 @@
 package com.kuba.punchbattery;
 
 import android.app.AlarmManager;
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -77,10 +78,9 @@ public class MainActivity extends AppCompatActivity
                     SensorManager.SENSOR_DELAY_NORMAL);
         }else{
             textTEMPERATURE_reading.setText("Sensor.TYPE_TEMPERATURE NOT Available");
-        };
+        }
 
-
-
+        batteryLevel = BatteryWidget.getBatteryLevel(this);
         batteryLevel_reading = (TextView)findViewById(R.id.Text4);
         batteryLevel_reading.setText(batteryLevel + "%");
 
@@ -91,8 +91,6 @@ public class MainActivity extends AppCompatActivity
         //Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);
         //mServiceIntent.putExtra("collectBattery", true);
         //MainActivity.this.startService(mServiceIntent);
-
-
 
         Intent intent = new Intent(MainActivity.this, DataCollector.class);
         PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);

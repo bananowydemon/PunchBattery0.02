@@ -1,6 +1,7 @@
 package com.kuba.punchbattery;
 
 
+import android.content.Context;
 import android.os.Environment;
 
 import java.io.BufferedReader;
@@ -24,8 +25,8 @@ public class LogFile {
 
 
 
-    public static void log(String msg, String fileName) {
-        File logFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName);
+    public static void log(Context con, String msg, String fileName) {
+        File logFile = new File(con.getFilesDir(), fileName);
         if(!logFile.exists()) {
             try {
                 logFile.createNewFile();
@@ -48,8 +49,8 @@ public class LogFile {
     }
 
     // odczytuje plik, zwraca cala jego zawartosc w formie listy z linijkami tekstu
-    public static List<String> read(String fileName) {
-        File logFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName);
+    public static List<String> read(Context con, String fileName) {
+        File logFile = new File(con.getFilesDir(), fileName);
         List<String> output = new ArrayList<String>(); // tu przechowujemy zawartosc pliku
         if(!logFile.exists()) { //zwraca pustego stringa jesli nie ma pliku
             output.add("");
@@ -132,13 +133,13 @@ public class LogFile {
         return output;
     }
 
-    public static void fileSizeControl (int maxLineNumber, String fileName) {
+    public static void fileSizeControl (Context con, int maxLineNumber, String fileName) {
         List<String> output = new ArrayList<String>();
-        output = LogFile.read(fileName);
+        output = LogFile.read(con, fileName);
         int size = output.size();
 
         if (size > maxLineNumber){
-            File logFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName);
+            File logFile = new File(con.getFilesDir(), fileName);
             if(logFile.exists()) {
                 boolean deleted = logFile.delete();
                 if (deleted) {

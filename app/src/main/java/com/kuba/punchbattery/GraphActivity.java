@@ -44,7 +44,7 @@ public class GraphActivity extends AppCompatActivity {
         this.series = new LineGraphSeries();
 
         this.timeSeriesData = new ArrayList<List<String>>();
-        this.timeSeriesData = LogFile.timeSeriesData(LogFile.read("batteryLevel.txt"), this.noOfPoints); //wyciaga dane z pliku
+        this.timeSeriesData = LogFile.timeSeriesData(LogFile.read(getApplicationContext(), "batteryLevel.txt"), this.noOfPoints); //wyciaga dane z pliku
         List<Double> xAxisSeries = new ArrayList<Double>();
         xAxisSeries = this.dateToDouble(timeSeriesData.get(0)); // zbior rzednych punktow
 
