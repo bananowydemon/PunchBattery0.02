@@ -36,11 +36,6 @@ public class GraphActivity extends AppCompatActivity {
         //sprawdź
         this.setSupportActionBar(toolbar);
         GraphView graphView = (GraphView)this.findViewById(R.id.graph);
-
-
-
-
-
         this.series = new LineGraphSeries();
 
         this.timeSeriesData = new ArrayList<List<String>>();
@@ -60,11 +55,10 @@ public class GraphActivity extends AppCompatActivity {
 
         graphView.addSeries(this.series);
         Viewport viewport = graphView.getViewport();
-        //viewport.setYAxisBoundsManual(true); // !!!!! wydaje mi sie, ze wtedy bedzie dynamicznie, chociaz moze ponizsze setScalable cos robi, trzeba probowac
-        //viewport.setMinY(0.0D);
-        //viewport.setMaxY(100.0D);
+        viewport.setYAxisBoundsManual(true); // !!!!! wydaje mi sie, ze wtedy bedzie dynamicznie, chociaz moze ponizsze setScalable cos robi, trzeba probowac
+        viewport.setMinY(0.0D);
+        viewport.setMaxY(100.0D);
         viewport.setScalable(true);
-
 
     }
 
