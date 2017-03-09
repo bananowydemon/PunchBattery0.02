@@ -1,11 +1,14 @@
 package com.kuba.punchbattery;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 
 import java.util.Calendar;
 
@@ -22,15 +25,15 @@ import java.util.Calendar;
  */
 public class DataCollector extends IntentService {
     private boolean collectBattery = true; // czy zbierac dane o baterii? do kazdej opcji taka zmienna
-    private int maxLogFileLength = 350; // maksymalna ilosc linijek w pliku, potem kasujemy
-    private String batteryLogName = "batteryLevel.txt"; // nazwa pliku z danymi o baterii
     private static long numberOfonHandleIntentExecutions = 0; // ta zminna zlicza ilosc zapisow w glownej metodzie, co n uruchomien przepriowadzane jest czyszczenie plikow
     private long fileSizeControlEveryNRuns = 50; // co ile zapisow ma byc sprawdzany rozmiar pliku i skracany
     //private int waitBetweenDataCollections = 600000; // w milisekundach
 
+
+    public static String COLLECT_BATTERY = "collectBattery";
+
     public DataCollector() {
         super("DataCollector");
-
     }
 
     @Override
@@ -63,37 +66,30 @@ public class DataCollector extends IntentService {
                 }
             }*/
             if (collectBattery) { // zbieranie info o baterii
-                String batteryLevel = Integer.toString(calculateBatteryLevel(getApplicationContext()));
-                LogFile.log(getApplicationContext(), batteryLevel, this.batteryLogName);
+                String batteryLevel = Integer.toString(BatteryWidget.getBatteryLevel(getApplicationContext()));
+                LogFile.log(getApplicationContext(), batteryLevel, Config.batteryLogFile);
                 if (DataCollector.numberOfonHandleIntentExecutions % fileSizeControlEveryNRuns == 0) { //co ile kontrola rozmiaru plikow
-                    LogFile.fileSizeControl(getApplicationContext(), this.maxLogFileLength, this.batteryLogName);
+                    LogFile.fileSizeControl(getApplicationContext(), Config.maxLogFileLength, Config.batteryLogFile);
                 }
             }
             DataCollector.numberOfonHandleIntentExecutions++;
         }
     }
 
-    private static int calculateBatteryLevel(Context context) {
-
-        Intent batteryIntent = context.getApplicationContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-        int level = 0;
-        int scale = 1;
-        try {
-            level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
-        } catch (java.lang.NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        return level * 100 / scale;
+    public static void turnAlarmOnOff(Context con, boolean onOff, boolean collectBattery)
+    {
+        Intent intent = new Intent(con, DataCollector.class);
+        //intent.putExtra(DataCollector.COLLECT_BATTERY, true);
+        PendingIntent pendingIntent = PendingIntent.getService(con, 0, intent, 0);
+        AlarmManager alarm = (AlarmManager)con.getSystemService(Context.ALARM_SERVICE);
+        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 100, Config.waitBetweenDataCollections, pendingIntent);
     }
 
     private void whatToMonitor (Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if (extras.containsKey("collectBattery")) {
-                this.collectBattery = extras.getBoolean("collectBattery", false);
+            if (extras.containsKey(COLLECT_BATTERY)) {
+                collectBattery = extras.getBoolean(COLLECT_BATTERY, false);
             }
         }
     }

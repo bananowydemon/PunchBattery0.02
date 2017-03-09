@@ -15,9 +15,6 @@ public class OnBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent newIntent = new Intent(context, DataCollector.class);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, newIntent, 0);
-        AlarmManager alarm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 100, this.waitBetweenDataCollections, pendingIntent);
+        DataCollector.turnAlarmOnOff(context, true, true);
     }
 }

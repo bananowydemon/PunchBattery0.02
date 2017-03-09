@@ -85,20 +85,9 @@ public class MainActivity extends AppCompatActivity
         batteryLevel_reading.setText(batteryLevel + "%");
 
         ImageView imageView = (ImageView)findViewById(R.id.ImageView1);
-        //imageView.setImageResource(R.drawable.batt);
+        imageView.setImageResource(R.drawable.batt);
 
-        // PONIZSZE TYLKO DLA TESTU, docelowo ma sie odpalac alarmmrnager uruchamiajacy serwis co jakis czas
-        //Intent mServiceIntent = new Intent(MainActivity.this, DataCollector.class);
-        //mServiceIntent.putExtra("collectBattery", true);
-        //MainActivity.this.startService(mServiceIntent);
-
-        Intent intent = new Intent(MainActivity.this, DataCollector.class);
-        PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
-        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 100, this.waitBetweenDataCollections, pendingIntent);
-        //nie mam pojęcia co spłodziłem więc sprawdź.
-
-
+        DataCollector.turnAlarmOnOff(this, true, true);
     }
 
     @Override
@@ -189,26 +178,5 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
-
-    private void getBatteryPercentage() {
-        BroadcastReceiver batteryLevelReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                context.unregisterReceiver(this);
-                int currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                int level = -1;
-                if (currentLevel >= 0 && scale > 0) {
-                    level = (currentLevel * 100) / scale;
-                }
-                batteryLevel = level;
-                batteryLevel_reading.setText(level + "%");
-            }
-        };
-        IntentFilter batteryLevelFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(batteryLevelReceiver, batteryLevelFilter);
-    }
-
-
-
 
 }

@@ -16,9 +16,8 @@ import android.widget.Toast;
 
 
 public class BatteryWidget extends AppWidgetProvider {
-    private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
     public  int batteryLevel = 0;
-
+    private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
     public static int getBatteryLevel(Context context){
         return calculateBatteryLevel(context);
     }
@@ -54,9 +53,7 @@ public class BatteryWidget extends AppWidgetProvider {
 
 
         // Sometimes when the phone is booting, onUpdate method gets called before onEnabled()
-        int currentLevel = calculateBatteryLevel(context);
-        if (batteryChanged(currentLevel)) {
-            batteryLevel = currentLevel;
+        batteryLevel = calculateBatteryLevel(context);
 
 
             for(int j = 0; j < appWidgetIds.length; j++)
@@ -94,7 +91,6 @@ public class BatteryWidget extends AppWidgetProvider {
                 }
 
             }
-        }
         updateViews(context);
     }
 
