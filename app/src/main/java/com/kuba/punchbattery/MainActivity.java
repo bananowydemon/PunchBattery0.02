@@ -34,13 +34,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public String currentBatteryLevel;
-    public int batteryLevel;
-
-    private int waitBetweenDataCollections = 600000; // w milisekundach
-
     TextView batteryLevel_reading, textTEMPERATURE_reading;
-    TextView textAMBIENT_TEMPERATURE_available, textAMBIENT_TEMPERATURE_reading;
 
 
     @Override
@@ -62,30 +56,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        textTEMPERATURE_reading
-                = (TextView)findViewById(R.id.Text2);
-
-        SensorManager mySensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-
-        Sensor TemperatureSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
-
-        if(TemperatureSensor != null){
-
-            textTEMPERATURE_reading.setText("Sensor.TYPE_TEMPERATURE Available");
-            mySensorManager.registerListener(
-                    TemperatureSensorListener,
-                    TemperatureSensor,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }else{
-            textTEMPERATURE_reading.setText("Sensor.TYPE_TEMPERATURE NOT Available");
-        }
-
-        batteryLevel = BatteryWidget.getBatteryLevel(this);
+        BatteryWidget.Data batteryData = BatteryWidget.getBatteryData(this);
+        textTEMPERATURE_reading = (TextView)findViewById(R.id.Text2);
+        textTEMPERATURE_reading.setText(batteryData.temperature + " *C");
         batteryLevel_reading = (TextView)findViewById(R.id.Text4);
-        batteryLevel_reading.setText(batteryLevel + "%");
+        batteryLevel_reading.setText(batteryData.level + "%");
+
 
         ImageView imageView = (ImageView)findViewById(R.id.ImageView1);
-        imageView.setImageResource(R.drawable.batt);
+        imageView.setImageResource(BatteryWidget.chooseBatteryResource(batteryData.level));
 
         DataCollector.turnAlarmOnOff(this, true, true);
     }
