@@ -4,6 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
@@ -13,53 +18,83 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 //import java.util.Random;
 
 public class GraphActivity extends AppCompatActivity {
+    public final int GRAPH_TYPE_LEVEL = 0;
+    public final int GRAPH_TYPE_TEMPERATURE = 1;
+
     private LineGraphSeries series;
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
     private List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
     private int noOfPoints = 288; // maks liczba punktow w metodzie onCreate
     private int refreshEveryNPoints = 5; // co ile puntow przerysowac wykres
+    private int currentGraphType = GRAPH_TYPE_LEVEL;
 
-    public GraphActivity() {
+    private void setupList()
+    {
+        ListView list = (ListView) findViewById(R.id.graph_type_select);
+
+        ArrayList<String> carL = new ArrayList<>();
+        carL.addAll(Arrays.asList(getResources().getStringArray(R.array.graph_type_values)));
+
+        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.graph_list_row, carL);
+
+        list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currentGraphType = position;
+                Toast.makeText(getApplicationContext(), "Type: " + position, Toast.LENGTH_SHORT).show();
+                setupGraph();
+            }
+        });
     }
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_graph);
-        Toolbar toolbar = (Toolbar)this.findViewById(R.id.toolbar);
-        //sprawdź
-        this.setSupportActionBar(toolbar);
-        GraphView graphView = (GraphView)this.findViewById(R.id.graph);
-        this.series = new LineGraphSeries();
-
-        this.timeSeriesData = new ArrayList<List<String>>();
-        this.timeSeriesData = LogFile.timeSeriesData(LogFile.read(getApplicationContext(), Config.batteryLogFile), this.noOfPoints); //wyciaga dane z pliku
-        List<Double> xAxisSeries = new ArrayList<Double>();
-        xAxisSeries = this.dateToDouble(timeSeriesData.get(0)); // zbior rzednych punktow
+    private void setupGraph()
+    {
+        GraphView graphView = (GraphView)findViewById(R.id.graph);
+        series = new LineGraphSeries();
+        timeSeriesData = LogFile.timeSeriesData(LogFile.read(this, Config.batteryLogFile), noOfPoints); //wyciaga dane z pliku
+        List<Double> xAxisSeries = dateToDouble(timeSeriesData.get(0)); // daty
 
         int pointNumber = xAxisSeries.size(); // liczba punktow
+        BatteryData data;
+        double y = 0.0D;
         for (int i = 0; i < pointNumber; i++) { // dodaje dane z pliku do serii
-
-            double currentBalanceDbl = Double.parseDouble(timeSeriesData.get(1).get(i).replaceAll(" ","."));
-
-
-            this.series.appendData(new DataPoint(xAxisSeries.get(i), currentBalanceDbl), true, this.noOfPoints);
+            data = BatteryData.fromString(timeSeriesData.get(1).get(i));
+            //double currentBalanceDbl = Double.parseDouble(timeSeriesData.get(1).get(i).replaceAll(" ","."));
+            if(currentGraphType == GRAPH_TYPE_LEVEL)
+                y = data.level;
+            else if(currentGraphType == GRAPH_TYPE_TEMPERATURE)
+                y = data.temperature;
+            series.appendData(new DataPoint(xAxisSeries.get(i), y), true, noOfPoints);
 
         }
 
-        graphView.addSeries(this.series);
+        graphView.removeAllSeries();
+        graphView.addSeries(series);
         Viewport viewport = graphView.getViewport();
         viewport.setYAxisBoundsManual(true); // !!!!! wydaje mi sie, ze wtedy bedzie dynamicznie, chociaz moze ponizsze setScalable cos robi, trzeba probowac
         viewport.setMinY(0.0D);
         viewport.setMaxY(100.0D);
         viewport.setScalable(true);
+    }
 
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_graph);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        setupList();
+        setupGraph();
     }
 
     protected void onResume() { // !!!!! zrobic kontrole dlugosci pliku w LogFile, uzyc tutaj
@@ -97,10 +132,15 @@ public class GraphActivity extends AppCompatActivity {
         return true;
     }
 
+    public void onListItemClick()
+    {
+
+    }
+
     // zwraca liste dat przeliczonych na Double, zeby podstawic do wykresu do osi X
     private List<Double> dateToDouble(List<String> dates) {
-        List<Date> sdfList = new ArrayList<Date>(); // tu trzymamy czasy jako Date
-        List<Double> output = new ArrayList<Double>();
+        List<Date> sdfList = new ArrayList<>(); // tu trzymamy czasy jako Date
+        List<Double> output = new ArrayList<>();
 
         // być może double z małej
 

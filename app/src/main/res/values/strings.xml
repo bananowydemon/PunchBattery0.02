@@ -17,4 +17,11 @@
     <string name="temperature">Temperature:</string>
     <string name="battery_level">Battery Level:</string>
     <string name="title_activity_graph">GraphActivity</string>
+    <string name="graph_entry_level">Battery level</string>
+    <string name="graph_entry_temp">Temperature</string>
+
+    <string-array name="graph_type_values">
+        <item>Battery level</item>
+        <item>Temperature</item>
+    </string-array>
 </resources>

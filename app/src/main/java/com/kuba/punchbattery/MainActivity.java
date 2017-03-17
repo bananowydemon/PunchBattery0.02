@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        BatteryWidget.Data batteryData = BatteryWidget.getBatteryData(this);
+        BatteryData batteryData = BatteryData.getCurrent(this);
         textTEMPERATURE_reading = (TextView)findViewById(R.id.Text2);
         textTEMPERATURE_reading.setText(batteryData.temperature + " *C");
         batteryLevel_reading = (TextView)findViewById(R.id.Text4);

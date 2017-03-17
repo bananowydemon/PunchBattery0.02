@@ -66,8 +66,7 @@ public class DataCollector extends IntentService {
                 }
             }*/
             if (collectBattery) { // zbieranie info o baterii
-                String batteryLevel = Integer.toString(BatteryWidget.getBatteryData(getApplicationContext()).level);
-                LogFile.log(getApplicationContext(), batteryLevel, Config.batteryLogFile);
+                LogFile.log(getApplicationContext(), BatteryData.getCurrent(this).toString(), Config.batteryLogFile);
                 if (DataCollector.numberOfonHandleIntentExecutions % fileSizeControlEveryNRuns == 0) { //co ile kontrola rozmiaru plikow
                     LogFile.fileSizeControl(getApplicationContext(), Config.maxLogFileLength, Config.batteryLogFile);
                 }

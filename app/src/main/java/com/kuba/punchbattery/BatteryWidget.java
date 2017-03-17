@@ -4,35 +4,24 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.SystemClock;
-import android.support.annotation.DrawableRes;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 
 public class BatteryWidget extends AppWidgetProvider {
 
-    public static class Data
-    {
-        public int level;
-        public int temperature;
-        public boolean plugged;
-    }
-
-    public Data current;
+    public BatteryData current;
     private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
 
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
 
-        current = getBatteryData(context);
+        current = BatteryData.getCurrent(context);
         //updateViews(context);
 
         //turnAlarmOnOff(context, true);
@@ -40,16 +29,6 @@ public class BatteryWidget extends AppWidgetProvider {
     }
 
     //// metody pomocnicze
-    public static Data getBatteryData(Context context) {
-        Data data = new Data();
-        Intent batteryIntent = context.getApplicationContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
-        data.temperature = batteryIntent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
-        data.plugged = (batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0);
-        data.level = level * 100 / scale;
-        return data;
-    }
 
     // wybiera obrazek do poziomu baterii
     public static int chooseBatteryResource(int level)
@@ -77,7 +56,7 @@ public class BatteryWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        current = getBatteryData(context);
+        current = BatteryData.getCurrent(context);
         final int N = appWidgetIds.length;
 
         for (int i=0; i<N; i++) {
@@ -92,7 +71,7 @@ public class BatteryWidget extends AppWidgetProvider {
         }
     }
 
-    private boolean batteryChanged(Data newData) {
+    private boolean batteryChanged(BatteryData newData) {
         return (current != newData);
     }
 
@@ -101,7 +80,7 @@ public class BatteryWidget extends AppWidgetProvider {
         super.onReceive(context, intent);
 
         if (intent.getAction().equals(ACTION_BATTERY_UPDATE)) {
-            Data newData = getBatteryData(context);
+            BatteryData newData = BatteryData.getCurrent(context);
             if (batteryChanged(newData)) {
                 current = newData;
                 //updateViews(context);
