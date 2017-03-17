@@ -7,7 +7,10 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
@@ -24,7 +27,7 @@ import java.util.List;
 
 //import java.util.Random;
 
-public class GraphActivity extends AppCompatActivity {
+public class GraphActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public final int GRAPH_TYPE_LEVEL = 0;
     public final int GRAPH_TYPE_TEMPERATURE = 1;
 
@@ -38,23 +41,15 @@ public class GraphActivity extends AppCompatActivity {
 
     private void setupList()
     {
-        ListView list = (ListView) findViewById(R.id.graph_type_select);
+        Spinner list = (Spinner) findViewById(R.id.graph_type_select);
 
-        ArrayList<String> carL = new ArrayList<>();
-        carL.addAll(Arrays.asList(getResources().getStringArray(R.array.graph_type_values)));
-
-        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.graph_list_row, carL);
+       ArrayAdapter adapter = ArrayAdapter.createFromResource(this,
+               R.array.graph_type_values, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         list.setAdapter(adapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                currentGraphType = position;
-                Toast.makeText(getApplicationContext(), "Type: " + position, Toast.LENGTH_SHORT).show();
-                setupGraph();
-            }
-        });
+        list.setOnItemSelectedListener(this);
     }
 
     private void setupGraph()
@@ -84,7 +79,19 @@ public class GraphActivity extends AppCompatActivity {
         viewport.setYAxisBoundsManual(true); // !!!!! wydaje mi sie, ze wtedy bedzie dynamicznie, chociaz moze ponizsze setScalable cos robi, trzeba probowac
         viewport.setMinY(0.0D);
         viewport.setMaxY(100.0D);
+        viewport.setXAxisBoundsManual(true);
+        viewport.setMinX(0.0D);
+        viewport.setMaxX(arrayMax(xAxisSeries));
         viewport.setScalable(true);
+    }
+
+    private double arrayMax(List<Double> a)
+    {
+        double max = a.get(0);
+        for(Double d : a)
+            if(d > max)
+                max = d;
+        return max;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,11 +139,6 @@ public class GraphActivity extends AppCompatActivity {
         return true;
     }
 
-    public void onListItemClick()
-    {
-
-    }
-
     // zwraca liste dat przeliczonych na Double, zeby podstawic do wykresu do osi X
     private List<Double> dateToDouble(List<String> dates) {
         List<Date> sdfList = new ArrayList<>(); // tu trzymamy czasy jako Date
@@ -171,6 +173,11 @@ public class GraphActivity extends AppCompatActivity {
         return output;
     }
 
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        currentGraphType = pos;
+        setupGraph();
+    }
 
-        List<List<Double>> output = new ArrayList<List<Double>>();
+    public void onNothingSelected(AdapterView<?> parent) { }
 }
