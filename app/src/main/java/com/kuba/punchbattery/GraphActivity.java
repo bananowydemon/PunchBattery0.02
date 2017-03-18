@@ -1,5 +1,6 @@
 package com.kuba.punchbattery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -7,11 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
@@ -21,7 +18,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +26,7 @@ import java.util.List;
 public class GraphActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public final int GRAPH_TYPE_LEVEL = 0;
     public final int GRAPH_TYPE_TEMPERATURE = 1;
+    public final int GRAPH_TYPE_SYSTEMSETTINGS = 2;
 
     private LineGraphSeries series;
     //private static final Random RANDOM = new Random();
@@ -83,15 +80,6 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
         viewport.setMinX(0.0D);
         viewport.setMaxX(arrayMax(xAxisSeries));
         viewport.setScalable(true);
-    }
-
-    private double arrayMax(List<Double> a)
-    {
-        double max = a.get(0);
-        for(Double d : a)
-            if(d > max)
-                max = d;
-        return max;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,9 +163,23 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        currentGraphType = pos;
-        setupGraph();
+            if(pos == GRAPH_TYPE_LEVEL || pos == GRAPH_TYPE_TEMPERATURE) {
+                currentGraphType = pos;
+                setupGraph();
+            }
+            else if(pos == GRAPH_TYPE_SYSTEMSETTINGS)
+                startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
     }
 
     public void onNothingSelected(AdapterView<?> parent) { }
+
+
+    private double arrayMax(List<Double> a)
+    {
+        double max = a.get(0);
+        for(Double d : a)
+            if(d > max)
+                max = d;
+        return max;
+    }
 }
