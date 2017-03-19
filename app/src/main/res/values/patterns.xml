@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer-array name="pattern0_data">
+    <array name="pattern0_data">
         <item name="img0">@drawable/batt</item>
         <item name="img1">@drawable/batt1</item>
         <item name="img2">@drawable/batt2</item>
-    </integer-array>
+    </array>
 
     <array name="patterns">
         <item name="pattern0">@array/pattern0_data</item>

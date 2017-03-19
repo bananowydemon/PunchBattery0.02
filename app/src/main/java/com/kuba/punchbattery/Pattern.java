@@ -19,7 +19,11 @@ public class Pattern {
         Pattern pat = new Pattern();
         Resources res = c.getResources();
         TypedArray ta = res.obtainTypedArray(R.array.patterns);
-        pat.images = res.getIntArray(ta.getResourceId(id, 0));
+        TypedArray t2 = res.obtainTypedArray(ta.getResourceId(id, 0));
+        pat.images = new int[t2.length()];
+        for(int i = 0; i < t2.length(); i++)
+            pat.images[i] = t2.getResourceId(i,0);
+        ta.recycle();
         return pat;
     }
 
