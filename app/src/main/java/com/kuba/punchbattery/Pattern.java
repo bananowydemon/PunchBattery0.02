@@ -3,6 +3,8 @@ package com.kuba.punchbattery;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.AnimationDrawable;
+import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 
@@ -33,5 +35,15 @@ public class Pattern {
         int id = data.level / step;
         if(id == images.length) id--; // gdyby czasem się zjebało i przeskoczyło images.length
         return images[id];
+    }
+
+    // tworzy animację patternu składającą się z osobnych imageów
+    public AnimationDrawable createAnimation(Context c, int duration)
+    {
+        AnimationDrawable anim = new AnimationDrawable();
+        for(int id : images)
+            anim.addFrame(ContextCompat.getDrawable(c, id), duration);
+        anim.setOneShot(false);
+        return anim;
     }
 }
