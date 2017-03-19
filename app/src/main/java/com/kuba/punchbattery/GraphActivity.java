@@ -2,6 +2,7 @@ package com.kuba.punchbattery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -168,7 +169,7 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
                 setupGraph();
             }
             else if(pos == GRAPH_TYPE_SYSTEMSETTINGS)
-                startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
     }
 
     public void onNothingSelected(AdapterView<?> parent) { }
