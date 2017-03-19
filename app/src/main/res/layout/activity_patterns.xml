@@ -1,7 +1,35 @@
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/recyclerView">
+    android:background="@color/colorPrimaryDark">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/kurwa"
+        android:src="@drawable/batt"
+        />
+    <Button
+        android:id="@+id/ihatemyself"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/kurwa"
+        android:text="@string/guziczek" />
+    <ImageView
+        android:id="@+id/obrazeczek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/v3"
+        android:layout_below="@+id/kurwa"
+        android:layout_margin="10dp"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/guziczek"
+        android:layout_alignBottom="@+id/obrazeczek"
+        android:layout_alignEnd="@+id/kurwa"
+        android:layout_marginEnd="18dp" />
 
-</android.support.v7.widget.RecyclerView>
+</RelativeLayout>
