@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="pattern0_data">
-        <item name="img0">@drawable/batt</item>
+        <item name="img0">@drawable/batt2</item>
         <item name="img1">@drawable/batt1</item>
-        <item name="img2">@drawable/batt2</item>
+        <item name="img2">@drawable/batt</item>
     </array>
 
     <array name="patterns">
