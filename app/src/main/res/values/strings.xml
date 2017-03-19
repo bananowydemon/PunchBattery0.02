@@ -19,6 +19,7 @@
     <string name="title_activity_graph">GraphActivity</string>
     <string name="graph_entry_level">Battery level</string>
     <string name="graph_entry_temp">Temperature</string>
+    <string name="guziczek">OK</string>
 
     <string-array name="graph_type_values">
         <item>Battery level</item>
