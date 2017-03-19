@@ -1,6 +1,7 @@
 package com.kuba.punchbattery;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -25,11 +26,12 @@ import java.util.List;
 //import java.util.Random;
 
 public class GraphActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    public final int GRAPH_TYPE_LEVEL = 0;
-    public final int GRAPH_TYPE_TEMPERATURE = 1;
-    public final int GRAPH_TYPE_SYSTEMSETTINGS = 2;
+    public static final int GRAPH_TYPE_ALL = 0;
+    public static final int GRAPH_TYPE_LEVEL = 1;
+    public static final int GRAPH_TYPE_TEMPERATURE = 2;
+    public static final int GRAPH_TYPE_VOLTAGE = 3;
+    public static final int GRAPH_TYPE_SYSTEMSETTINGS = 4;
 
-    private LineGraphSeries series;
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
     private List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
@@ -53,26 +55,35 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
     private void setupGraph()
     {
         GraphView graphView = (GraphView)findViewById(R.id.graph);
-        series = new LineGraphSeries();
         timeSeriesData = LogFile.timeSeriesData(LogFile.read(this, Config.batteryLogFile), noOfPoints); //wyciaga dane z pliku
         List<Double> xAxisSeries = dateToDouble(timeSeriesData.get(0)); // daty
+
+        LineGraphSeries seriesLevel = new LineGraphSeries(), seriesTemperature = new LineGraphSeries(), seriesVoltage = new LineGraphSeries();
+        seriesLevel.setColor(Color.GREEN);
+        seriesTemperature.setColor(Color.RED);
+        seriesVoltage.setColor(Color.BLUE);
 
         int pointNumber = xAxisSeries.size(); // liczba punktow
         BatteryData data;
         double y = 0.0D;
         for (int i = 0; i < pointNumber; i++) { // dodaje dane z pliku do serii
             data = BatteryData.fromString(timeSeriesData.get(1).get(i));
-            //double currentBalanceDbl = Double.parseDouble(timeSeriesData.get(1).get(i).replaceAll(" ","."));
-            if(currentGraphType == GRAPH_TYPE_LEVEL)
-                y = data.level;
-            else if(currentGraphType == GRAPH_TYPE_TEMPERATURE)
-                y = data.temperature;
-            series.appendData(new DataPoint(xAxisSeries.get(i), y), true, noOfPoints);
-
+            if(currentGraphType == GRAPH_TYPE_LEVEL || currentGraphType == GRAPH_TYPE_ALL)
+                seriesLevel.appendData(new DataPoint(xAxisSeries.get(i), data.level), true, noOfPoints);
+            if(currentGraphType == GRAPH_TYPE_TEMPERATURE || currentGraphType == GRAPH_TYPE_ALL)
+                seriesTemperature.appendData(new DataPoint(xAxisSeries.get(i), data.temperature), true, noOfPoints);
+            if(currentGraphType == GRAPH_TYPE_VOLTAGE || currentGraphType == GRAPH_TYPE_ALL)
+                seriesVoltage.appendData(new DataPoint(xAxisSeries.get(i), data.voltage), true, noOfPoints);
         }
 
         graphView.removeAllSeries();
-        graphView.addSeries(series);
+        if(currentGraphType == GRAPH_TYPE_LEVEL || currentGraphType == GRAPH_TYPE_ALL)
+            graphView.addSeries(seriesLevel);
+        if(currentGraphType == GRAPH_TYPE_TEMPERATURE || currentGraphType == GRAPH_TYPE_ALL)
+            graphView.addSeries(seriesTemperature);
+        if(currentGraphType == GRAPH_TYPE_VOLTAGE || currentGraphType == GRAPH_TYPE_ALL)
+            graphView.addSeries(seriesVoltage);
+
         Viewport viewport = graphView.getViewport();
         viewport.setYAxisBoundsManual(true); // !!!!! wydaje mi sie, ze wtedy bedzie dynamicznie, chociaz moze ponizsze setScalable cos robi, trzeba probowac
         viewport.setMinY(0.0D);
@@ -164,12 +175,13 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-            if(pos == GRAPH_TYPE_LEVEL || pos == GRAPH_TYPE_TEMPERATURE) {
+            if(pos == GRAPH_TYPE_SYSTEMSETTINGS)
+                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+            else
+            {
                 currentGraphType = pos;
                 setupGraph();
             }
-            else if(pos == GRAPH_TYPE_SYSTEMSETTINGS)
-                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
     }
 
     public void onNothingSelected(AdapterView<?> parent) { }

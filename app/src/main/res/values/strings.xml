@@ -22,8 +22,10 @@
     <string name="guziczek">OK</string>
 
     <string-array name="graph_type_values">
+        <item>All</item>
         <item>Battery level</item>
         <item>Temperature</item>
+        <item>Voltage</item>
         <item>System battery settings</item>
     </string-array>
 </resources>
