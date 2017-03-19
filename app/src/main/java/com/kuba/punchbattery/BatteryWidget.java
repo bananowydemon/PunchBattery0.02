@@ -31,12 +31,6 @@ public class BatteryWidget extends AppWidgetProvider {
     //// metody pomocnicze
 
     // wybiera obrazek do poziomu baterii
-    public static int chooseBatteryResource(int level)
-    {
-        if (level > 66) return R.drawable.batt;
-        if (level > 30) return R.drawable.batt1;
-        return R.drawable.batt2;
-    }
 
     public static void turnAlarmOnOff(Context context, boolean turnOn) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -64,7 +58,7 @@ public class BatteryWidget extends AppWidgetProvider {
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.battery_widget);
             views.setTextViewText(R.id.batteryText, current.level + "%");
-            views.setImageViewResource(R.id.dzialajKurwiu, chooseBatteryResource(current.level));
+            views.setImageViewResource(R.id.dzialajKurwiu, Config.currentPattern.chooseImageResource(current));
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);

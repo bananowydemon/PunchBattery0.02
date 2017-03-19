@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        Config.currentPattern = Pattern.get(this, 0); // na razie tylko pattern 0 i chuj
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
 
 
         ImageView imageView = (ImageView)findViewById(R.id.ImageView1);
-        imageView.setImageResource(BatteryWidget.chooseBatteryResource(batteryData.level));
+        imageView.setImageResource(Config.currentPattern.chooseImageResource(batteryData));
 
         DataCollector.turnAlarmOnOff(this, true, true);
     }
