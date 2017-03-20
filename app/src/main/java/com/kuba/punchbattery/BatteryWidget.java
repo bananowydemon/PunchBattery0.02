@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 public class BatteryWidget extends AppWidgetProvider {
 
     public BatteryData current;
+    public boolean configLoaded = false;
     private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
 
     @Override
@@ -22,20 +23,9 @@ public class BatteryWidget extends AppWidgetProvider {
         super.onEnabled(context);
 
         current = BatteryData.getCurrent(context);
-        //updateViews(context);
 
-        //turnAlarmOnOff(context, true);
         context.startService(new Intent(context, ScreenMonitorService.class));
-    }
 
-    //// metody pomocnicze
-
-    // wybiera obrazek do poziomu baterii
-    public static int chooseBatteryResource(int level)
-    {
-        if (level > 66) return R.drawable.batt;
-        if (level > 30) return R.drawable.batt1;
-        return R.drawable.batt2;
     }
 
     public static void turnAlarmOnOff(Context context, boolean turnOn) {
@@ -56,6 +46,13 @@ public class BatteryWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
+        // przy pierwszej możliwości załadować Configa
+        if(!configLoaded)
+        {
+            Config.load(context);
+            Global.reloadValues(context);
+        }
+
         current = BatteryData.getCurrent(context);
         final int N = appWidgetIds.length;
 
@@ -64,7 +61,7 @@ public class BatteryWidget extends AppWidgetProvider {
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.battery_widget);
             views.setTextViewText(R.id.batteryText, current.level + "%");
-            views.setImageViewResource(R.id.dzialajKurwiu, chooseBatteryResource(current.level));
+            views.setImageViewResource(R.id.dzialajKurwiu, Global.currentPattern.chooseImageResource(current));
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);

@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -45,8 +46,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -62,9 +61,14 @@ public class MainActivity extends AppCompatActivity
         batteryLevel_reading = (TextView)findViewById(R.id.Text4);
         batteryLevel_reading.setText(batteryData.level + "%");
 
+        // sprawdzamy czy konfiguracja załadowana, jeśli nie to ładujemy i odświeżamy wartości globalne
+        if(Config.load(this))
+            Global.reloadValues(this);
 
-        ImageView imageView = (ImageView)findViewById(R.id.ImageView1);
-        imageView.setImageResource(BatteryWidget.chooseBatteryResource(batteryData.level));
+        ImageView imageView = (ImageView) findViewById(R.id.ImageView1);
+        AnimationDrawable batteryAnimation = Global.currentPattern.createAnimation(this, 1000);
+        imageView.setBackground(batteryAnimation);
+        batteryAnimation.start();
 
         DataCollector.turnAlarmOnOff(this, true, true);
     }

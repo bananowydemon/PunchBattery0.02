@@ -1,35 +1,42 @@
 package com.kuba.punchbattery;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 //import java.util.Random;
 
 public class GraphActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    public final int GRAPH_TYPE_LEVEL = 0;
-    public final int GRAPH_TYPE_TEMPERATURE = 1;
-    public final int GRAPH_TYPE_SYSTEMSETTINGS = 2;
+    public static final int GRAPH_TYPE_LEVEL = 0;
+    public static final int GRAPH_TYPE_TEMPERATURE = 1;
+    public static final int GRAPH_TYPE_VOLTAGE = 2;
+    public static final int GRAPH_TYPE_SYSTEMSETTINGS = 3;
 
-    private LineGraphSeries series;
     //private static final Random RANDOM = new Random();
     //private int lastX = 0;
     private List<List<String>>  timeSeriesData; // timeSeriesData.get(0) -daty, timeSeriesData.get(1) -watrosci
@@ -53,34 +60,84 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
     private void setupGraph()
     {
         GraphView graphView = (GraphView)findViewById(R.id.graph);
-        series = new LineGraphSeries();
         timeSeriesData = LogFile.timeSeriesData(LogFile.read(this, Config.batteryLogFile), noOfPoints); //wyciaga dane z pliku
         List<Double> xAxisSeries = dateToDouble(timeSeriesData.get(0)); // daty
 
+        // trzy serie (poziom baterii, temperatura, napięcie)
+        LineGraphSeries seriesLevel = new LineGraphSeries(), seriesTemperature = new LineGraphSeries(), seriesVoltage = new LineGraphSeries();
+        seriesLevel.setColor(Color.GREEN);
+        seriesTemperature.setColor(Color.RED);
+        seriesVoltage.setColor(Color.BLUE);
+
         int pointNumber = xAxisSeries.size(); // liczba punktow
         BatteryData data;
-        double y = 0.0D;
         for (int i = 0; i < pointNumber; i++) { // dodaje dane z pliku do serii
             data = BatteryData.fromString(timeSeriesData.get(1).get(i));
-            //double currentBalanceDbl = Double.parseDouble(timeSeriesData.get(1).get(i).replaceAll(" ","."));
             if(currentGraphType == GRAPH_TYPE_LEVEL)
-                y = data.level;
-            else if(currentGraphType == GRAPH_TYPE_TEMPERATURE)
-                y = data.temperature;
-            series.appendData(new DataPoint(xAxisSeries.get(i), y), true, noOfPoints);
-
+                seriesLevel.appendData(new DataPoint(xAxisSeries.get(i), data.level), true, noOfPoints);
+            if(currentGraphType == GRAPH_TYPE_TEMPERATURE)
+                seriesTemperature.appendData(new DataPoint(xAxisSeries.get(i), data.temperature), true, noOfPoints);
+            if(currentGraphType == GRAPH_TYPE_VOLTAGE)
+                seriesVoltage.appendData(new DataPoint(xAxisSeries.get(i), data.voltage), true, noOfPoints);
         }
 
         graphView.removeAllSeries();
-        graphView.addSeries(series);
+
+        //// ustawiamy formatowanie dla etykiet
+        final DateFormat dateFormat = new SimpleDateFormat("HH:mm"); // wyświetla daty jako godziny
+        final Calendar calendar = Calendar.getInstance();
         Viewport viewport = graphView.getViewport();
-        viewport.setYAxisBoundsManual(true); // !!!!! wydaje mi sie, ze wtedy bedzie dynamicznie, chociaz moze ponizsze setScalable cos robi, trzeba probowac
-        viewport.setMinY(0.0D);
-        viewport.setMaxY(100.0D);
-        viewport.setXAxisBoundsManual(true);
-        viewport.setMinX(0.0D);
-        viewport.setMaxX(arrayMax(xAxisSeries));
+        if(currentGraphType == GRAPH_TYPE_LEVEL) {
+            graphView.addSeries(seriesLevel);
+            viewport.setYAxisBoundsManual(true);
+            viewport.setMinY(0.0D);
+            viewport.setMaxY(100.0D);
+            graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() { // customowy format etykiet
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    if (isValueX) {
+                        calendar.setTimeInMillis((long) value);
+                        return dateFormat.format(calendar.getTimeInMillis());
+                    } else
+                        return String.format(Locale.ENGLISH, "%d%%", (int) value); // bez miejsc po przecinku -> np 50%
+                }
+            });
+        }
+        if(currentGraphType == GRAPH_TYPE_TEMPERATURE) {
+            graphView.addSeries(seriesTemperature);
+            viewport.setYAxisBoundsManual(false);
+            graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    if (isValueX) {
+                        calendar.setTimeInMillis((long) value);
+                        return dateFormat.format(calendar.getTimeInMillis());
+                    } else
+                        return String.format(Locale.ENGLISH, "%.1f℃", value); // z jednym miejscem po przecinku -> np 52.4℃
+                }
+            });
+        }
+        if(currentGraphType == GRAPH_TYPE_VOLTAGE) {
+            graphView.addSeries(seriesVoltage);
+            viewport.setYAxisBoundsManual(false);
+            graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    if (isValueX) {
+                        calendar.setTimeInMillis((long) value);
+                        return dateFormat.format(calendar.getTimeInMillis());
+                    } else
+                        return String.format(Locale.ENGLISH, "%.2fV", value / 1000); // z dwoma miejscami po przecinku, zamiana mV na V -> np 4.67V
+                }
+            });
+        }
+
+        //// ustawienie osi X
+        Pair<Double, Double> minmax = arrayMinMax(xAxisSeries); // najmniejsza i największa wartość w czasie (x-ach)
+        graphView.getGridLabelRenderer().setHumanRounding(false);
+        graphView.getGridLabelRenderer().setNumHorizontalLabels(3); // max 3 etykiety godzin
         viewport.setScalable(true);
+        viewport.setScrollable(true);
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,15 +186,15 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     // zwraca liste dat przeliczonych na Double, zeby podstawic do wykresu do osi X
-    private List<Double> dateToDouble(List<String> dates) {
+    /*private List<Double> dateToDouble(List<String> dates) {
         List<Date> sdfList = new ArrayList<>(); // tu trzymamy czasy jako Date
         List<Double> output = new ArrayList<>();
 
         // być może double z małej
 
         int pointNumber = dates.size();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss:SSS");
         for (int i = 0; i < pointNumber; i++) { // petla przerabia daty ze String na Date
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss:SSS");
             sdf.setLenient(false);
             try {
                 Date dt = sdf.parse(dates.get(i));
@@ -160,27 +217,50 @@ public class GraphActivity extends AppCompatActivity implements AdapterView.OnIt
             var69.printStackTrace();
         }
         return output;
+    }*/
+
+    // nowa wersja, daty jako milisekundy
+    private List<Double> dateToDouble(List<String> dates) {
+        List<Double> output = new ArrayList<>();
+
+        try {
+            int pointNumber = dates.size();
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss:SSS");
+            sdf.setLenient(false);
+            for (int i = 0; i < pointNumber; i++) { // petla przerabia daty ze String na double
+                   Date dt = sdf.parse(dates.get(i));
+                   output.add((double) dt.getTime()); // dodaje date do listy dat
+            }
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        return output;
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-            if(pos == GRAPH_TYPE_LEVEL || pos == GRAPH_TYPE_TEMPERATURE) {
+            if(pos == GRAPH_TYPE_SYSTEMSETTINGS)
+                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+            else
+            {
                 currentGraphType = pos;
                 setupGraph();
             }
-            else if(pos == GRAPH_TYPE_SYSTEMSETTINGS)
-                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
     }
 
     public void onNothingSelected(AdapterView<?> parent) { }
 
 
-    private double arrayMax(List<Double> a)
+    private Pair<Double, Double> arrayMinMax(List<Double> a)
     {
-        double max = a.get(0);
-        for(Double d : a)
-            if(d > max)
+        double max = a.get(0), min = a.get(0);
+        for(Double d : a) {
+            if (d > max)
                 max = d;
-        return max;
+            if (d < min)
+                min = d;
+        }
+        return Pair.create(min, max);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import android.widget.Toast;
 
 /**
  * Zajmuje się odczytywaniem danych baterii
@@ -14,6 +13,7 @@ public class BatteryData {
     public int level;
     public int temperature;
     public boolean plugged;
+    public int voltage;
 
     public static BatteryData getCurrent(Context context) {
         BatteryData data = new BatteryData();
@@ -22,6 +22,7 @@ public class BatteryData {
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
         data.temperature = batteryIntent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
         data.plugged = (batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0);
+        data.voltage = batteryIntent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
         data.level = level * 100 / scale;
         return data;
     }
@@ -35,13 +36,14 @@ public class BatteryData {
         data.level = Integer.parseInt(strings[0]);
         data.temperature = Integer.parseInt(strings[1]);
         data.plugged = Boolean.parseBoolean(strings[2]);
+        data.voltage = Integer.parseInt(strings[3]);
         return data;
     }
 
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(level).append(';').append(temperature).append(';').append(plugged);
+        sb.append(level).append(';').append(temperature).append(';').append(plugged).append(';').append(voltage);
         return sb.toString();
     }
 }
