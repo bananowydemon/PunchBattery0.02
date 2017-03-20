@@ -29,6 +29,31 @@ public class Pattern {
         return pat;
     }
 
+    public static ArrayList<Pattern> getAllPatterns(Context c)
+    {
+        Resources res = c.getResources();
+        TypedArray ta = res.obtainTypedArray(R.array.patterns);
+        int count = ta.length();
+        ArrayList<Pattern> patterns = new ArrayList<>(count);
+        for(int i = 0; i < count; i++)
+        {
+            TypedArray t2 = res.obtainTypedArray(ta.getResourceId(i, 0));
+            Pattern pat = new Pattern();
+            pat.images = new int[t2.length()];
+            for (int j = 0; j < t2.length(); j++)
+                pat.images[j] = t2.getResourceId(j, 0);
+            patterns.add(pat);
+            t2.recycle();
+        }
+        ta.recycle();
+        return patterns;
+    }
+
+    public static int getPatternCount(Context c)
+    {
+        return c.getResources().obtainTypedArray(R.array.patterns).length();
+    }
+
     public int chooseImageResource(BatteryData data)
     {
         int step = 100 / images.length;

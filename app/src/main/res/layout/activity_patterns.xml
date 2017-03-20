@@ -6,7 +6,7 @@
     tools:context="com.kuba.punchbattery.PatternsActivity" >
 
     <ListView
-        android:id="@+id/android:list"
+        android:id="@+id/pattern_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
