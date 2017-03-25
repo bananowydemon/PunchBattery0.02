@@ -63,6 +63,7 @@ public class Pattern {
     }
 
     // tworzy animację patternu składającą się z osobnych imageów
+    //do czasu *muahaahahahah*
     public AnimationDrawable createAnimation(Context c, int duration)
     {
         AnimationDrawable anim = new AnimationDrawable();
