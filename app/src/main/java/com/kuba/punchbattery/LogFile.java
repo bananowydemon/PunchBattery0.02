@@ -2,7 +2,6 @@ package com.kuba.punchbattery;
 
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
