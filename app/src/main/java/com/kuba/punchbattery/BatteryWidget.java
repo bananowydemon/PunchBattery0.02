@@ -63,7 +63,16 @@ public class BatteryWidget extends AppWidgetProvider {
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
+
+            Intent intent = new Intent(context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+            RemoteViews views1 = new RemoteViews(context.getPackageName(), R.layout.battery_widget);
+            views1.setOnClickPendingIntent(R.id.dzialajKurwiu, pendingIntent);
+            appWidgetManager.updateAppWidget(appWidgetIds, views1);
         }
+
+
     }
 
     private boolean batteryChanged(BatteryData newData) {
