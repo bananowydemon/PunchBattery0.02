@@ -5,12 +5,8 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.SystemClock;
-
-import java.util.Calendar;
 
 /**
  * Klasa pobiera dane o telefonie i zapisuje w plikach oraz kontroluje rozmiar plikow
@@ -24,16 +20,22 @@ import java.util.Calendar;
  *!!!!!!!!!!!!!!  uzyc job scheduler api, lub alarmmenager do tej klasy, zamiast while(true),  bo moze sie wywalac !!!!!!!!!!!
  */
 public class DataCollector extends IntentService {
-    private boolean collectBattery = true; // czy zbierac dane o baterii? do kazdej opcji taka zmienna
-    private static long numberOfonHandleIntentExecutions = 0; // ta zminna zlicza ilosc zapisow w glownej metodzie, co n uruchomien przepriowadzane jest czyszczenie plikow
-    private long fileSizeControlEveryNRuns = 50; // co ile zapisow ma byc sprawdzany rozmiar pliku i skracany
-    //private int waitBetweenDataCollections = 600000; // w milisekundach
-
-
     public static String COLLECT_BATTERY = "collectBattery";
+    private static long numberOfonHandleIntentExecutions = 0; // ta zminna zlicza ilosc zapisow w glownej metodzie, co n uruchomien przepriowadzane jest czyszczenie plikow
+    private boolean collectBattery = true; // czy zbierac dane o baterii? do kazdej opcji taka zmienna
+    //private int waitBetweenDataCollections = 600000; // w milisekundach
+    private long fileSizeControlEveryNRuns = 50; // co ile zapisow ma byc sprawdzany rozmiar pliku i skracany
 
     public DataCollector() {
         super("DataCollector");
+    }
+
+    public static void turnAlarmOnOff(Context con, boolean onOff, boolean collectBattery) {
+        Intent intent = new Intent(con, DataCollector.class);
+        //intent.putExtra(DataCollector.COLLECT_BATTERY, true);
+        PendingIntent pendingIntent = PendingIntent.getService(con, 0, intent, 0);
+        AlarmManager alarm = (AlarmManager) con.getSystemService(Context.ALARM_SERVICE);
+        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 100, Config.waitBetweenDataCollections, pendingIntent);
     }
 
     @Override
@@ -73,15 +75,6 @@ public class DataCollector extends IntentService {
             }
             DataCollector.numberOfonHandleIntentExecutions++;
         }
-    }
-
-    public static void turnAlarmOnOff(Context con, boolean onOff, boolean collectBattery)
-    {
-        Intent intent = new Intent(con, DataCollector.class);
-        //intent.putExtra(DataCollector.COLLECT_BATTERY, true);
-        PendingIntent pendingIntent = PendingIntent.getService(con, 0, intent, 0);
-        AlarmManager alarm = (AlarmManager)con.getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 100, Config.waitBetweenDataCollections, pendingIntent);
     }
 
     private void whatToMonitor (Intent intent) {

@@ -6,27 +6,15 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
 import android.os.SystemClock;
 import android.widget.RemoteViews;
 
 
 public class BatteryWidget extends AppWidgetProvider {
 
+    private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
     public BatteryData current;
     public boolean configLoaded = false;
-    private static final String ACTION_BATTERY_UPDATE = "com.kuba.punchbattery.action.Update";
-
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-
-        current = BatteryData.getCurrent(context);
-
-        context.startService(new Intent(context, ScreenMonitorService.class));
-
-    }
 
     public static void turnAlarmOnOff(Context context, boolean turnOn) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -40,6 +28,16 @@ public class BatteryWidget extends AppWidgetProvider {
             alarmManager.cancel(pendingIntent);
 
         }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+
+        current = BatteryData.getCurrent(context);
+
+        context.startService(new Intent(context, ScreenMonitorService.class));
+
     }
 
     @Override
@@ -65,7 +63,16 @@ public class BatteryWidget extends AppWidgetProvider {
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
+
+            Intent intent = new Intent(context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+            RemoteViews views1 = new RemoteViews(context.getPackageName(), R.layout.battery_widget);
+            views1.setOnClickPendingIntent(R.id.dzialajKurwiu, pendingIntent);
+            appWidgetManager.updateAppWidget(appWidgetIds, views1);
         }
+
+
     }
 
     private boolean batteryChanged(BatteryData newData) {

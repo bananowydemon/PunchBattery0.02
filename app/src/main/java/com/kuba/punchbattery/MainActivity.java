@@ -1,20 +1,11 @@
 package com.kuba.punchbattery;
 
-import android.app.AlarmManager;
-import android.app.Application;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,17 +17,28 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    TextView batteryLevel_reading, textTEMPERATURE_reading;
+    private final SensorEventListener TemperatureSensorListener
+            = new SensorEventListener() {
 
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (event.sensor.getType() == Sensor.TYPE_TEMPERATURE) {
+                String val = event.values[0] + "°C";
+                textTEMPERATURE_reading.setText(val);
+            }
+        }
+
+    };
+    TextView batteryLevel_reading, textTEMPERATURE_reading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,27 +141,5 @@ public class MainActivity extends AppCompatActivity
         Intent intent= new Intent(this, GraphActivity.class);
         startActivity(intent);
     }
-
-
-
-
-    private final SensorEventListener TemperatureSensorListener
-            = new SensorEventListener(){
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            if(event.sensor.getType() == Sensor.TYPE_TEMPERATURE){
-                String val = event.values[0] + "°C";
-                textTEMPERATURE_reading.setText(val);
-            }
-        }
-
-    };
 
 }
